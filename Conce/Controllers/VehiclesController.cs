@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Conce.Models;
+using System;
+using System.Threading.Tasks;
 using Conce.Controllers.Resources;
-using AutoMapper;
-using Conce.Data;
-using Microsoft.EntityFrameworkCore;
+using Conce.Core;
+using Conce.Core.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,23 +13,20 @@ namespace Conce.Controllers
     [Route("api/[controller]")]
     public class VehiclesController : Controller
     {
-        private readonly ConceContext ctx;
         private readonly IMapper mapper;
+        private readonly IVehicleRepository repository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public VehiclesController(ConceContext ctx, IMapper mapper)
+        public VehiclesController(IMapper mapper, IVehicleRepository repository, IUnitOfWork unitOfWork)
         {
-            this.ctx = ctx;
             this.mapper = mapper;
+            this.repository = repository;
+            this.unitOfWork = unitOfWork;
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicle(int id)
         {
-            var vehicle = await ctx.Vehicles
-                .Include(v => v.Features)
-                    .ThenInclude(vf => vf.Feature)
-                .Include(v => v.Model)
-                    .ThenInclude(m => m.Make)
-                .Where(v => v.Id == id).SingleOrDefaultAsync();
+            var vehicle = await repository.GetVehicle(id);
 
             if (vehicle == null)
                 return NotFound();
@@ -42,22 +36,17 @@ namespace Conce.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SaveVehicleResource vehicleResource)
+        public async Task<IActionResult> AddVehicle([FromBody] SaveVehicleResource vehicleResource)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var vehicle = mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
             vehicle.LastUpdate = DateTime.Now;
-            ctx.Vehicles.Add(vehicle);
-            await ctx.SaveChangesAsync();
+            repository.Add(vehicle);
+            await unitOfWork.CompleteAsync();
 
-            vehicle = await ctx.Vehicles
-             .Include(v => v.Features)
-                 .ThenInclude(vf => vf.Feature)
-             .Include(v => v.Model)
-                 .ThenInclude(m => m.Make)
-             .SingleOrDefaultAsync(v => v.Id == vehicle.Id);
+            vehicle = await repository.GetVehicle(vehicle.Id);
 
 
             var result = mapper.Map<Vehicle, VehicleResource>(vehicle);
@@ -69,32 +58,29 @@ namespace Conce.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var vehicle = await ctx.Vehicles
-             .Include(v => v.Features)
-                 .ThenInclude(vf => vf.Feature)
-             .Include(v => v.Model)
-                 .ThenInclude(m => m.Make)
-             .SingleOrDefaultAsync(v => v.Id == id);
+            var vehicle = await repository.GetVehicle(id);
 
             if (vehicle == null)
                 return NotFound();
 
             mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource, vehicle);
             vehicle.LastUpdate = DateTime.Now;
-            await ctx.SaveChangesAsync();
+            await unitOfWork.CompleteAsync();
+
+            vehicle = await repository.GetVehicle(id);
             var result = mapper.Map<Vehicle, VehicleResource>(vehicle);
             return Ok(result);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
-            var vehicle = await ctx.Vehicles.FindAsync(id);
+            var vehicle = await repository.GetVehicle(id, includeRelated: false);
 
             if (vehicle == null)
                 return NotFound();
 
-            ctx.Remove(vehicle);
-            await ctx.SaveChangesAsync();
+            repository.Remove(vehicle);
+            await unitOfWork.CompleteAsync();
 
             return Ok(id);
         }

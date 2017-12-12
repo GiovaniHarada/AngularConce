@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Conce.Models
+namespace Conce.Core.Models
 {
     [Table("VehicleFeatures")]
     public class VehicleFeature

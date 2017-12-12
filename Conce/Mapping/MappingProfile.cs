@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Conce.Controllers.Resources;
-using Conce.Models;
+using Conce.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

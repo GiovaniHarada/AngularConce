@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Conce.Data;
+using Conce.Persistence;
+using Conce.Core;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
@@ -24,7 +25,9 @@ namespace Conce
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {            
+            services.AddScoped<IVehicleRepository, VehicleRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper();
             services.AddDbContext<ConceContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection"))

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Conce.Models
+namespace Conce.Core.Models
 {
     public class Feature
     {
