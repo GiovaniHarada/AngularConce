@@ -51,7 +51,16 @@ namespace Conce.Controllers
             vehicle.LastUpdate = DateTime.Now;
             ctx.Vehicles.Add(vehicle);
             await ctx.SaveChangesAsync();
-            var result = mapper.Map<Vehicle, SaveVehicleResource>(vehicle);
+
+            vehicle = await ctx.Vehicles
+             .Include(v => v.Features)
+                 .ThenInclude(vf => vf.Feature)
+             .Include(v => v.Model)
+                 .ThenInclude(m => m.Make)
+             .SingleOrDefaultAsync(v => v.Id == vehicle.Id);
+
+
+            var result = mapper.Map<Vehicle, VehicleResource>(vehicle);
             return Ok(result);
         }
         [HttpPut("{id}")]
@@ -60,7 +69,12 @@ namespace Conce.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var vehicle = await ctx.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+            var vehicle = await ctx.Vehicles
+             .Include(v => v.Features)
+                 .ThenInclude(vf => vf.Feature)
+             .Include(v => v.Model)
+                 .ThenInclude(m => m.Make)
+             .SingleOrDefaultAsync(v => v.Id == id);
 
             if (vehicle == null)
                 return NotFound();
@@ -68,7 +82,7 @@ namespace Conce.Controllers
             mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource, vehicle);
             vehicle.LastUpdate = DateTime.Now;
             await ctx.SaveChangesAsync();
-            var result = mapper.Map<Vehicle, SaveVehicleResource>(vehicle);
+            var result = mapper.Map<Vehicle, VehicleResource>(vehicle);
             return Ok(result);
         }
         [HttpDelete("{id}")]
