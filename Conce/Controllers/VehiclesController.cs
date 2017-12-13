@@ -38,6 +38,7 @@ namespace Conce.Controllers
         [HttpPost]
         public async Task<IActionResult> AddVehicle([FromBody] SaveVehicleResource vehicleResource)
         {
+            throw new Exception();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
