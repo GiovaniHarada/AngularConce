@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Conce.Controllers.Resources;
 using Conce.Core;
 using Conce.Core.Models;
+using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -84,6 +85,12 @@ namespace Conce.Controllers
             await unitOfWork.CompleteAsync();
 
             return Ok(id);
+        }
+        [HttpGet]
+        public async Task<IEnumerable<VehicleResource>> GetVehicles()
+        {
+            var vehicles = await repository.GetVehicles();
+            return mapper.Map<IEnumerable<Vehicle>, IEnumerable<VehicleResource>>(vehicles);
         }
     }
 }
