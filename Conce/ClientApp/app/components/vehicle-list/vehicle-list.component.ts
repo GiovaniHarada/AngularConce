@@ -8,31 +8,59 @@ import { VehicleService } from "../../services/vehicle.service";
   styleUrls: ['./vehicle-list.component.css']
 })
 export class VehicleListComponent implements OnInit {
-    vehicles: Vehicle[];
-    allVehicles: Vehicle[];
-    makes: KeyValuePair[];
-    filter: any = {};
+    queryResult: any = {};
+    makes: any[];
+    models: any[];
+
+    query: any = {
+        pageSize: 3
+    };
+    columns = [
+        { title: '#'},
+        { title: 'Nome de contato', key: 'contactName', isSortable: true},
+        { title: 'Marca', key: 'make', isSortable: true },
+        { title: 'Modelo', key: 'model', isSortable: true },
+        { }
+    ];
 
     constructor(private vehicleService: VehicleService) { }
 
     ngOnInit() {
         this.vehicleService.getMakes()
             .subscribe(makes => this.makes = makes);
-        this.vehicleService.getVehicles()
-            .subscribe(vehicles => this.vehicles = this.allVehicles = vehicles);
+        this.populateVehicles();
     }
     onFilterChange() {
-        var vehicles = this.allVehicles;
-        if (this.filter.makeId)
-            vehicles = vehicles.filter(v => v.make.id == this.filter.makeId);
-
-        if (this.filter.modelId)
-            vehicles = vehicles.filter(v => v.model.id == this.filter.modelId);
-
-        this.vehicles = vehicles;
+        this.populateVehicles();
+    }
+    onMakeChange() {
+        this.query.modelId = null;
+        this.populateModels();
+        this.onFilterChange();
     }
     resetFilter() {
-        this.filter = {};
+        this.query = {};
         this.onFilterChange();
+    }
+    sortBy(columnName) {
+        if (this.query.sortBy === columnName) {
+            this.query.isSortAscending = !this.query.isSortAscending;
+        } else {
+            this.query.sortBy = columnName;
+            this.query.isSortAscending = true
+        }
+        this.populateVehicles();
+    }
+    onPageChanged(page) {
+        this.query.page = page;
+        this.populateVehicles();
+    }
+    private populateVehicles() {
+        this.vehicleService.getVehicles(this.query)
+            .subscribe(result => this.queryResult = result);
+    }
+    private populateModels() {
+        var selectedMake = this.makes.find(m => m.id == this.query.makeId);
+        this.models = selectedMake ? selectedMake.models : [];
     }
 }

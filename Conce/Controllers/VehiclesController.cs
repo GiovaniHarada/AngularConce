@@ -39,7 +39,6 @@ namespace Conce.Controllers
         [HttpPost]
         public async Task<IActionResult> AddVehicle([FromBody] SaveVehicleResource vehicleResource)
         {
-            throw new Exception();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -87,10 +86,11 @@ namespace Conce.Controllers
             return Ok(id);
         }
         [HttpGet]
-        public async Task<IEnumerable<VehicleResource>> GetVehicles()
+        public async Task<QueryResultResource<VehicleResource>> GetVehicles(VehicleQueryResource filterResource)
         {
-            var vehicles = await repository.GetVehicles();
-            return mapper.Map<IEnumerable<Vehicle>, IEnumerable<VehicleResource>>(vehicles);
+            VehicleQuery filter = mapper.Map<VehicleQueryResource, VehicleQuery>(filterResource);
+            var queryResult = await repository.GetVehicles(filter);
+            return mapper.Map<QueryResult<Vehicle>, QueryResultResource<VehicleResource>>(queryResult);
         }
     }
 }

@@ -2,26 +2,39 @@
 <p>
     <a [routerLink]="['/vehicles/New']" class="btn btn-primary">NOVO</a>
 </p>
-<div class="well">
-    <div class="form-group">
+<div class="row well">
+    <div class="form-group col-md-6">
         <label for="make">Marca</label>
-        <select id="make" class="form-control" [(ngModel)]="filter.makeId" (change)="onFilterChange()">
+        <select id="make" class="form-control" [(ngModel)]="query.makeId" (change)="onMakeChange()">
             <option value=""></option>
             <option *ngFor="let m of makes" value="{{m.id}}">{{m.name}}</option>
         </select>
     </div>
-    <button class="btn btn-default" (click)="resetFilter()">Reset</button>
+    <div class="form-group col-md-6">
+        <label for="model">Modelo</label>
+        <select id="model" class="form-control" [(ngModel)]="query.modelId" (change)="onFilterChange()">
+            <option value=""></option>
+            <option *ngFor="let m of models" value="{{m.id}}">{{m.name}}</option>
+        </select>
+    </div>
+    <div class="col-md-12">
+        <button class="btn btn-default" (click)="resetFilter()">Reset</button>
+    </div>
 </div>
 <table class="table table-striped" style="margin-top: 25px">
     <tr>
-        <th>#</th>
-        <th>Marca</th>
-        <th>Modelo</th>
-        <th>Nome de Contato</th>
-        <th></th>
+        <th *ngFor="let c of columns">            
+            <div *ngIf="c.isSortable" (click)="sortBy(c.key)">
+                {{c.title}}
+                <i *ngIf="query.sortBy === c.key" class="fa"[class.fa-sort-asc]="query.isSortAscending" [class.fa-sort-desc]="!query.isSortAscending"></i>
+            </div>
+            <div *ngIf="!c.isSortable">
+                {{c.title}}
+            </div>
+        </th>
     </tr>
     <tbody>
-        <tr *ngFor="let v of vehicles">
+        <tr *ngFor="let v of queryResult.itens">
             <td>{{v.id}}</td>
             <td>{{v.make.name}}</td>
             <td>{{v.model.name}}</td>
@@ -30,3 +43,4 @@
         </tr>
     </tbody>
 </table>
+<pagination [total-items]="queryResult.totalItens" [page-size]="query.pageSize" (page-changed)="onPageChanged($event)"></pagination>
