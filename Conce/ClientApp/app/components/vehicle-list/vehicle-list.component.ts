@@ -8,12 +8,14 @@ import { VehicleService } from "../../services/vehicle.service";
   styleUrls: ['./vehicle-list.component.css']
 })
 export class VehicleListComponent implements OnInit {
+    private readonly PAGE_SIZE = 3;
+
     queryResult: any = {};
     makes: any[];
     models: any[];
 
     query: any = {
-        pageSize: 3
+        pageSize: this.PAGE_SIZE
     };
     columns = [
         { title: '#'},
@@ -31,6 +33,7 @@ export class VehicleListComponent implements OnInit {
         this.populateVehicles();
     }
     onFilterChange() {
+        this.query.page = 1;
         this.populateVehicles();
     }
     onMakeChange() {
@@ -39,8 +42,11 @@ export class VehicleListComponent implements OnInit {
         this.onFilterChange();
     }
     resetFilter() {
-        this.query = {};
-        this.onFilterChange();
+        this.query = {
+            page: 1,
+            pageSize: this.PAGE_SIZE
+        };
+        this.populateVehicles();
     }
     sortBy(columnName) {
         if (this.query.sortBy === columnName) {

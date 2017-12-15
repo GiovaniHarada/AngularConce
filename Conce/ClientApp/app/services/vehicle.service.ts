@@ -15,10 +15,6 @@ export class VehicleService {
         return this.http.get('/api/features')
             .map(res => res.json());
     }
-    create(vehicle) {
-        return this.http.post(this.vehiclesEndpoint, vehicle)
-        .map(res => res.json());
-    }
     getVehicles(filter) {
         return this.http.get(this.vehiclesEndpoint + '?' + this.toQueryString(filter))
             .map(res => res.json());
@@ -40,6 +36,10 @@ export class VehicleService {
     }
     update(vehicle: SaveVehicle) {
         return this.http.put(this.vehiclesEndpoint + '/' + vehicle.id, vehicle)
+            .map(res => res.json());
+    }
+    create(vehicle: SaveVehicle) {
+        return this.http.post(this.vehiclesEndpoint, vehicle)
             .map(res => res.json());
     }
     delete(id) {

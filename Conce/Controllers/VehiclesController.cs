@@ -42,6 +42,8 @@ namespace Conce.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            Console.WriteLine(vehicleResource);
+
             var vehicle = mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
             vehicle.LastUpdate = DateTime.Now;
             repository.Add(vehicle);
