@@ -13,6 +13,7 @@ namespace Conce.Mapping
         public MappingProfile()
         {
             //Domain to api
+            CreateMap<Photo, PhotoResource>();
             CreateMap(typeof(QueryResult<>), typeof(QueryResultResource<>));
             CreateMap<Make, MakeResource>();
             CreateMap<Make, KeyValuePairResource>();
