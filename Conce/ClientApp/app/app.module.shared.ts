@@ -19,6 +19,7 @@ import { ViewVehicleComponent } from "./components/view-vehicle/view-vehicle.com
 import { AppErrorHandler } from './app.error-handler';
 
 import { VehicleService } from "./services/vehicle.service";
+import { PhotoService } from "./services/photo.service";
 
 
 Raven.config('https://c5be7b893ecf4f12a9350d8f3d68915f@sentry.io/258923').install();
@@ -55,6 +56,7 @@ Raven.config('https://c5be7b893ecf4f12a9350d8f3d68915f@sentry.io/258923').instal
     providers: [
         { provide: ErrorHandler, useClass: AppErrorHandler},
         VehicleService,
+        PhotoService
     ]
 })
 export class AppModuleShared {

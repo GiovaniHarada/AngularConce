@@ -22,14 +22,16 @@ namespace Conce.Controllers
         private readonly PhotoSettings photoSettings;
         private readonly IHostingEnvironment host;
         private readonly IVehicleRepository repository;
+        private readonly IPhotoRepository photoRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public PhotosController(IHostingEnvironment host, IVehicleRepository repository, IUnitOfWork unitOfWork, IMapper mapper, IOptionsSnapshot<PhotoSettings> options)
+        public PhotosController(IHostingEnvironment host, IVehicleRepository repository, IPhotoRepository photoRepository, IUnitOfWork unitOfWork, IMapper mapper, IOptionsSnapshot<PhotoSettings> options)
         {
             this.photoSettings = options.Value;
             this.host = host;
             this.repository = repository;
+            this.photoRepository = photoRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
@@ -64,7 +66,12 @@ namespace Conce.Controllers
             await unitOfWork.CompleteAsync();
 
             return Ok(mapper.Map<Photo, PhotoResource>(photo));
-
+        }
+        [HttpGet]
+        public async Task<IEnumerable<PhotoResource>> GetPhotos(int vehicleId)
+        {
+            var photos = await photoRepository.GetPhotos(vehicleId);
+            return mapper.Map<IEnumerable<Photo>, IEnumerable<PhotoResource>>(photos);
         }
     }
 }
