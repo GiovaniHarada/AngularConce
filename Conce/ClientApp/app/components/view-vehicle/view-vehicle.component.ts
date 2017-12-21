@@ -1,8 +1,9 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastyService } from "ng2-toasty";
 import { VehicleService } from "../../services/vehicle.service";
 import { PhotoService } from "../../services/photo.service";
+import { ProgressService } from '../../services/progress.service';
 
 @Component({
   selector: 'app-view-vehicle',
@@ -15,14 +16,16 @@ export class ViewVehicleComponent implements OnInit {
     vehicle: any;
     vehicleId: number;
     photos: any[];
+    progress: any;
 
     constructor(
+        private zone: NgZone,
         private route: ActivatedRoute,
         private router: Router,
         private toasty: ToastyService,
         private vehicleService: VehicleService,
-        private photoService: PhotoService
-    ) {
+        private photoService: PhotoService,
+        private progressService : ProgressService) {
         route.params.subscribe(p => {
             this.vehicleId = +p['id'];
             if (isNaN(this.vehicleId) || this.vehicleId <= 0) {
@@ -55,10 +58,33 @@ export class ViewVehicleComponent implements OnInit {
         }
     }
     uploadPhoto() {
+
+        this.progressService.startTracking()
+        .subscribe(progress => {
+            console.log(progress);
+            this.zone.run(() => {
+                this.progress = progress;
+            });                
+        }, undefined, () => { this.progress = null });
+
         var nativeElement: HTMLInputElement = this.fileInput.nativeElement;
-        if (nativeElement.files)
-            this.photoService.upload(this.vehicleId, nativeElement.files[0])
-                .subscribe(x => console.log(x));
+        var file = nativeElement.files![0];
+        nativeElement.value = '';
+
+        this.photoService.upload(this.vehicleId, file)
+        .subscribe(photo => {
+            this.photos.push(photo);
+        },
+        err => {
+            this.toasty.error({
+                title: 'Erro',
+                msg: err.text(),
+                theme: 'bootstrap',
+                showClose: true,
+                timeout: 5000
+            })
+        });
+
     }
 }
 
