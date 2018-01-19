@@ -6,6 +6,7 @@ using Conce.Controllers.Resources;
 using Conce.Core;
 using Conce.Core.Models;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -37,6 +38,7 @@ namespace Conce.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddVehicle([FromBody] SaveVehicleResource vehicleResource)
         {
             if (!ModelState.IsValid)
@@ -56,6 +58,7 @@ namespace Conce.Controllers
             return Ok(result);
         }
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateVehicle(int id, [FromBody] SaveVehicleResource vehicleResource)
         {
             if (!ModelState.IsValid)
@@ -75,6 +78,7 @@ namespace Conce.Controllers
             return Ok(result);
         }
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
             var vehicle = await repository.GetVehicle(id, includeRelated: false);
