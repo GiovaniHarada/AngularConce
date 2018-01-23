@@ -8,6 +8,8 @@ using Conce.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Conce.Controllers.Resources;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,7 +26,7 @@ namespace Conce.Controllers
             this.ctx = ctx;
             this.mapper = mapper;
         }
-
+        
         [HttpGet]
         public async Task<IEnumerable<Feature>> Get()
         {

@@ -1,4 +1,5 @@
 ﻿using Conce.Core.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Conce.Persistence
 {
-    public class ConceContext : DbContext
+    public class ConceContext : IdentityDbContext<AppUser>
     {
         public DbSet<Make> Makes { get; set; }
         public DbSet<Model> Models { get; set; }
@@ -21,8 +22,10 @@ namespace Conce.Persistence
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<VehicleFeature>().HasKey(vf =>
                 new {vf.VehicleId, vf.FeatureId});
+
         }
     }
 }

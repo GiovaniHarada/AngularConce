@@ -12,6 +12,11 @@ using Conce.Core;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Conce.Core.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Conce
 {
@@ -27,15 +32,37 @@ namespace Conce
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+
             services.Configure<PhotoSettings>(Configuration.GetSection("PhotoSettings"));
             services.AddScoped<IVehicleRepository, VehicleRepository>();
             services.AddScoped<IPhotoRepository, PhotoRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper();
+
+            services.AddIdentity<AppUser, IdentityRole>(cfg => {
+                cfg.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<ConceContext>();
+
+            services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(cfg => {
+                    cfg.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidIssuer = Configuration["Tokens:Issuer"],
+                        ValidAudience = Configuration["Tokens:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
+                    };
+                });
+
             services.AddDbContext<ConceContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection"))
             );
-            services.AddMvc();
+            services.AddMvc(opt => {
+                opt.Filters.Add(new RequireHttpsAttribute());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +82,8 @@ namespace Conce
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

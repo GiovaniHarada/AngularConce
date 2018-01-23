@@ -1,11 +1,42 @@
 <ng2-toasty [position]="'top-right'"></ng2-toasty>
-<div class='container-fluid'>
-    <div class='row'>
-        <div class='col-sm-3'>
-            <nav-menu></nav-menu>
+
+<header class="mb-5">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Bikes&Trikes</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+            </ul>
+            <form class="form-inline mt-2 mt-md-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
         </div>
-        <div class='col-sm-9 body-content'>
+    </nav>
+</header>
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        <nav-menu></nav-menu>
+
+
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <router-outlet></router-outlet>
-        </div>
+        </main>
     </div>
 </div>
+
