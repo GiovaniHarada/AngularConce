@@ -15,21 +15,19 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Conce.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Account")]
-    public class AccountController : Controller
+    [Route("api/[controller]/[action]")]
+    public class AuthController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _configuration;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration)
+        public AuthController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._configuration = configuration;
         }
-
         [HttpPost]
         public async Task<IActionResult> CreateToken([FromBody] LoginResource model)
         {

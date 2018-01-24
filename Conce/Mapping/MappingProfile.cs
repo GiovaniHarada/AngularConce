@@ -28,6 +28,8 @@ namespace Conce.Mapping
                 .ForMember(vr => vr.Features, opt => opt.MapFrom(v => v.Features.Select(vf => new KeyValuePairResource { Id = vf.Feature.Id, Name = vf.Feature.Name})));
 
             //Api to domain
+            CreateMap<UserRegisterResource, AppUser>()
+                .ForMember(v => v.UserName, opt => opt.MapFrom(urr => urr.Email)); 
             CreateMap<VehicleQueryResource, VehicleQuery>();
             CreateMap<SaveVehicleResource, Vehicle>()
                 .ForMember(v => v.Id, opt => opt.Ignore())
