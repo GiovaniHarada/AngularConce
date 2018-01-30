@@ -7,6 +7,7 @@ import { ConfigService } from '../utils/config.service';
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { BaseService } from './base.service';
+import { Router } from '@angular/router';
 
 
 @Injectable()
@@ -19,7 +20,7 @@ export class UserService extends BaseService {
 
     private loggedIn = false;
 
-    constructor(private http: Http, private configService: ConfigService) {
+    constructor(private http: Http, private configService: ConfigService, private router: Router) {
         super();
         if (typeof window !== 'undefined') {
             this.loggedIn = !!localStorage.getItem('auth_token');
@@ -60,6 +61,7 @@ export class UserService extends BaseService {
         localStorage.removeItem('auth_token');
         this.loggedIn = false;
         this._authNavStatusSource.next(false);
+        this.router.navigate(['login']);
     }
 
     isLoggedIn() {

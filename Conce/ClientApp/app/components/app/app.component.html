@@ -1,6 +1,6 @@
 <ng2-toasty [position]="'top-right'"></ng2-toasty>
 
-<header class="mb-5">
+<header class="mb-5" *ngIf="auth.isLoggedIn()">
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="#">Bikes&Trikes</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,11 +30,11 @@
 
 <div class="container-fluid">
     <div class="row">
-        <nav-menu></nav-menu>
+        <nav-menu *ngIf="auth.isLoggedIn()"></nav-menu>
 
 
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" [ngClass]="{'col-md-12 col-lg-12': !auth.isLoggedIn()}">
             <router-outlet></router-outlet>
         </main>
     </div>
