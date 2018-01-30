@@ -21,8 +21,9 @@ export class UserService extends BaseService {
 
     constructor(private http: Http, private configService: ConfigService) {
         super();
-        this.loggedIn = !!localStorage.getItem('auth_token');
-
+        if (typeof window !== 'undefined') {
+            this.loggedIn = !!localStorage.getItem('auth_token');
+        }
         this._authNavStatusSource.next(this.loggedIn);
         this.baseUrl = configService.getApiURI();
     }
@@ -40,10 +41,9 @@ export class UserService extends BaseService {
     login(userName, password) {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
-
         return this.http
             .post(
-            this.baseUrl + '/auth/login',
+            this.baseUrl + '/auth/CreateToken',
             JSON.stringify({ userName, password }), { headers }
             )
             .map(res => res.json())

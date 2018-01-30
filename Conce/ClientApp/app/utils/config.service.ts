@@ -6,7 +6,7 @@ export class ConfigService {
     _apiURI: string;
 
     constructor() {
-        this._apiURI = 'http://localhost:44300/api';
+        this._apiURI = 'https://localhost:44300/api';
     }
 
     getApiURI() {

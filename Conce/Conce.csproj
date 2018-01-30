@@ -27,7 +27,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="ClientApp\app\app.error-handler.ts" />
+    <None Remove="ClientApp\app\directives\email.validator.directive.ts" />
     <None Remove="ClientApp\app\models\vehicle.ts" />
+    <None Remove="ClientApp\app\services\auth.guard.ts" />
     <None Remove="ClientApp\app\services\feature.service.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -35,7 +37,9 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\app.error-handler.ts" />
+    <TypeScriptCompile Include="ClientApp\app\directives\email.validator.directive.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\vehicle.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\auth.guard.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClientApp\app\components\shared\" />

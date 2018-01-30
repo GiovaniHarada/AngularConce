@@ -22,6 +22,10 @@ import { AppErrorHandler } from './app.error-handler';
 import { VehicleService } from "./services/vehicle.service";
 import { PhotoService } from "./services/photo.service";
 import { BrowserXhrWithProgress, ProgressService } from './services/progress.service';
+import { RegistrationFormComponent } from './components/registration-form/registration-form.component';
+import { UserService } from './services/user.service';
+import { ConfigService } from './utils/config.service';
+import { AuthGuard } from './services/auth.guard';
 
 
 Raven.config('https://c5be7b893ecf4f12a9350d8f3d68915f@sentry.io/258923').install();
@@ -37,7 +41,8 @@ Raven.config('https://c5be7b893ecf4f12a9350d8f3d68915f@sentry.io/258923').instal
         VehicleListComponent,
         PaginationComponent,
         ViewVehicleComponent,
-        LoginFormComponent
+        LoginFormComponent,
+        RegistrationFormComponent
     ],
     imports: [
         CommonModule,
@@ -48,12 +53,14 @@ Raven.config('https://c5be7b893ecf4f12a9350d8f3d68915f@sentry.io/258923').instal
             { path: '', redirectTo: 'vehicles', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
             { path: 'login', component: LoginFormComponent },
-            { path: 'counter', component: CounterComponent },
+            { path: 'counter', component: CounterComponent, canActivate: [AuthGuard] },
             { path: 'fetch-data', component: FetchDataComponent },
             { path: 'vehicles', component: VehicleListComponent },
             { path: 'vehicles/new', component: VehicleFormComponent },
             { path: 'vehicles/:id', component: ViewVehicleComponent },
             { path: 'vehicles/edit/:id', component: VehicleFormComponent },
+            { path: 'login', component: LoginFormComponent },
+            { path: 'register', component: RegistrationFormComponent },
             { path: '**', redirectTo: 'home' }
         ])
     ],
@@ -62,7 +69,10 @@ Raven.config('https://c5be7b893ecf4f12a9350d8f3d68915f@sentry.io/258923').instal
         { provide: BrowserXhr, useClass: BrowserXhrWithProgress },
         VehicleService,
         PhotoService,
-        ProgressService
+        ProgressService,
+        UserService,
+        ConfigService,
+        AuthGuard
     ]
 })
 export class AppModuleShared {

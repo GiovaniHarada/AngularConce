@@ -1,51 +1,16 @@
-<!--<div class='main-nav'>
-    <div class='navbar navbar-inverse'>
-        <div class='navbar-header'>
-            <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
-                <span class='sr-only'>Toggle navigation</span>
-                <span class='icon-bar'></span>
-                <span class='icon-bar'></span>
-                <span class='icon-bar'></span>
-            </button>
-            <a class='navbar-brand' [routerLink]="['/home']">Conce</a>
-        </div>
-        <div class='clearfix'></div>
-        <div class='navbar-collapse collapse'>
-            <ul class='nav navbar-nav'>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/home']">
-                        <span class='glyphicon glyphicon-home'></span> Home
-                    </a>
-                </li>
-                <li [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{exact: true}">
-                    <a [routerLink]="['/vehicles']">
-                        <span class='glyphicon glyphicon-th-list'></span> Vehicles
-                    </a>
-                </li>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/vehicles/new/']">
-                        <span class='glyphicon glyphicon-plus'></span>New Vehicle
-                    </a>
-                </li>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/counter']">
-                        <span class='glyphicon glyphicon-education'></span> Counter
-                    </a>
-                </li>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/fetch-data']">
-                        <span class='glyphicon glyphicon-th-list'></span> Fetch data
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>-->
-
-
 <nav class="col-md-2 d-none d-md-block bg-light sidebar pt-3">
     <div class="sidebar-sticky">
         <ul class="nav flex-column">
+            <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="!userService.isLoggedIn()">
+                <a class="nav-link" [routerLink]="['/login']">
+                    <span class='glyphicon glyphicon-user'></span> Login
+                </a>
+            </li>
+            <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="userService.isLoggedIn()">
+                <a class="nav-link" (click)="userService.logout()">
+                    <span class='glyphicon glyphicon-user'></span> Logoff
+                </a>
+            </li>
             <li class="nav-item" [routerLinkActive]="['link-active']">
                 <a class="nav-link" [routerLink]="['/home']">
                     <span class='glyphicon glyphicon-home'></span> Home
