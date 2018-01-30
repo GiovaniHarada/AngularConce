@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { SaveVehicle } from "../models/vehicle";
 
@@ -39,7 +39,14 @@ export class VehicleService {
             .map(res => res.json());
     }
     create(vehicle: SaveVehicle) {
-        return this.http.post(this.vehiclesEndpoint, vehicle)
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let authToken = localStorage.getItem('auth_token');
+        headers.append('Authorization', `Bearer ${authToken}`);
+        let options = new RequestOptions({ headers: headers });
+        console.log(options);
+
+        return this.http.post(this.vehiclesEndpoint, vehicle, options )
             .map(res => res.json());
     }
     delete(id) {
