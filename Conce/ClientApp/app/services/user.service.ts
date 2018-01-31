@@ -19,11 +19,14 @@ export class UserService extends BaseService {
     authNavStatus$ = this._authNavStatusSource.asObservable();
 
     private loggedIn = false;
+    private tokenExpiration: Date;
 
     constructor(private http: Http, private configService: ConfigService, private router: Router) {
         super();
         if (typeof window !== 'undefined') {
-            this.loggedIn = !!localStorage.getItem('auth_token');
+            if (!!localStorage.getItem('auth_token')) {
+                this.loggedIn = true
+            }
         }
         this._authNavStatusSource.next(this.loggedIn);
         this.baseUrl = configService.getApiURI();
@@ -49,7 +52,8 @@ export class UserService extends BaseService {
             )
             .map(res => res.json())
             .map(res => {
-                localStorage.setItem('auth_token', res.auth_token);
+                localStorage.setItem('auth_token', res.token);
+                localStorage.setItem('auth_token_expire', res.expiration);
                 this.loggedIn = true;
                 this._authNavStatusSource.next(true);
                 return true;
