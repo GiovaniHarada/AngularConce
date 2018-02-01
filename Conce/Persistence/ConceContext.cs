@@ -16,6 +16,13 @@ namespace Conce.Persistence
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Photo> Photos { get; set; }
 
+        //-------
+        public DbSet<CategoriaProduto> CategoriaProduto { get; set; }
+        public DbSet<Marca> Marca { get; set; }
+        public DbSet<Produto> Produto { get; set; }
+        public DbSet<FotoProduto> FotoProduto { get; set; }
+
+
         public ConceContext(DbContextOptions<ConceContext> options) : base(options)
         {
 
